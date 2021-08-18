@@ -1,3 +1,8 @@
 # RB130 - RB139 Ruby Foundations: More Topics
 
-Notes, assignments, and projects for Launch School's RB130 and RB139 courses
+## Course Assignments
+
+### Lesson 1
+
+- [Walk-through: times method](./lesson_1/times.rb)
+- [Walk-through: each method](./lesson_1/each.rb)
