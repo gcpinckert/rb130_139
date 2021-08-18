@@ -6,3 +6,5 @@
 
 - [Walk-through: times method](./lesson_1/times.rb)
 - [Walk-through: each method](./lesson_1/each.rb)
+- [Assignment: select method](./lesson_1/select.rb)
+- [Assignment: reduce method](./lesson_1/reduce.rb)
