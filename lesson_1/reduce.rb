@@ -82,7 +82,7 @@ p reduce(array, 10) { |acc, num| acc + num }                # => 25
 =begin
 - Note: using the integer 0 as default value for the accumulator object limits our capabilities for reduce
 - Our elements *must* be numeric in this case (i.e. we cannot concatenate a string with 0)
-- In Enumbercable#reduce, the default initial value is the first element of the collection
+- In Enumerable#reduce, the default initial value is the first element of the collection
 
 Algorithm:
 - Initialize the accumulator to either the value passed as argument or the first element in the collection

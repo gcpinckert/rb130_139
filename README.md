@@ -8,3 +8,4 @@
 - [Walk-through: each method](./lesson_1/each.rb)
 - [Assignment: select method](./lesson_1/select.rb)
 - [Assignment: reduce method](./lesson_1/reduce.rb)
+- [Assignment: Todo list](./lesson_1/todo.rb)
