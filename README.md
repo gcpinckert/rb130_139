@@ -31,3 +31,16 @@
 - [Iterators: True for None?](./exercises/easy1/08.rb)
 - [Iterators: True for One?](./exercises/easy1/09.rb)
 - [Count Items](./exercises/easy1/10.rb)
+
+### Easy 2
+
+- [From-To-Step Sequence Generator](./exercises/easy2/01.rb)
+- [Zipper](./exercises/easy2/02.rb)
+- [map](./exercises/easy2/03.rb)
+- [count](./exercises/easy2/04.rb)
+- [drop_while](./exercises/easy2/05.rb)
+- [each_with_index](./exercises/easy2/06.rb)
+- [each_with_object](./exercises/easy2/07.rb)
+- [max_by](./exercises/easy2/08.rb)
+- [each_cons (Part 1)](./exercises/easy2/09.rb)
+- [each_cons (Part 2)](./exercises/easy2/10.rb)
