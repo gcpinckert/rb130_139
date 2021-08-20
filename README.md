@@ -16,3 +16,18 @@
 - [CarTest Class with Testing Suite](./lesson_2/car_test.rb)
 - [Assignment: TodoList Tests](./todo/todolist_test.rb)
 - [Test Coverage for TodoList](./todo/coverage/index.html)
+
+## Exercises
+
+### Easy 1
+
+- [Enumerable Class Creation](./exercises/easy1/01.rb)
+- [Optional Blocks](./exercises/easy1/02.rb)
+- [Find Missing Numbers](./exercises/easy1/03.rb)
+- [Divisors](./exercises/easy1/04.rb) *TODO: further exploration
+- [Encrypted Pioneers](./exercises/easy1/05.rb)
+- [Iterators: True for Any?](./exercises/easy1/06.rb)
+- [Iterators: True for All?](./exercises/easy1/07.rb)
+- [Iterators: True for None?](./exercises/easy1/08.rb)
+- [Iterators: True for One?](./exercises/easy1/09.rb)
+- [Count Items](./exercises/easy1/10.rb)
