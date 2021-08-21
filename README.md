@@ -44,3 +44,16 @@
 - [max_by](./exercises/easy2/08.rb)
 - [each_cons (Part 1)](./exercises/easy2/09.rb)
 - [each_cons (Part 2)](./exercises/easy2/10.rb)
+
+### Easy Testing
+
+- [Boolean Assertions](./exercises/easy_testing/01.rb)
+- [Equality Assertions](./exercises/easy_testing/02.rb)
+- [Nil Assertions](./exercises/easy_testing/03.rb)
+- [Empty Object Assertions](./exercises/easy_testing/04.rb)
+- [Included Object Assertions](./exercises/easy_testing/05.rb)
+- [Exception Assertions](./exercises/easy_testing/06.rb)
+- [Type Assertions](./exercises/easy_testing/07.rb)
+- [Kind Assertions](./exercises/easy_testing/08.rb)
+- [Same Object Assertions](./exercises/easy_testing/09.rb)
+- [Refutations](./exercises/easy_testing/10.rb)
