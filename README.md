@@ -57,3 +57,7 @@
 - [Kind Assertions](./exercises/easy_testing/08.rb)
 - [Same Object Assertions](./exercises/easy_testing/09.rb)
 - [Refutations](./exercises/easy_testing/10.rb)
+
+### Medium 1
+
+- [Listening Device](./exercises/medium1/01.rb)
