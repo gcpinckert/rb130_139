@@ -61,3 +61,7 @@
 ### Medium 1
 
 - [Listening Device](./exercises/medium1/01.rb)
+- [Text Analyzer - Sandwich Code](./exercises/medium1/02.rb)
+- [Passing Parameters Part 1](./exercises/medium1/03.rb)
+- [Passing Parameters Part 2](./exercises/medium1/04.rb)
+- [Passing Parameters Part 3](./exercises/medium1/05.rb)
