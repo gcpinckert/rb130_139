@@ -72,4 +72,7 @@
 
 - [Cash Register Class](./exercises/medium2/cash_register.rb)
 - [Transaction Class](./exercises/medium2/transaction.rb)
-- [Testing Suite](./exercises/medium2/testing_suite.rb)
+- [Cash Register Tests](./exercises/medium2/cash_register_tests.rb)
+- [Transaction Tests](./exercises/medium2/transaction_tests.rb)
+- [Text Class](./exercises/medium2/text.rb)
+- [Text Tests](./exercises/medium2/text_tests.rb)
