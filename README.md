@@ -65,3 +65,5 @@
 - [Passing Parameters Part 1](./exercises/medium1/03.rb)
 - [Passing Parameters Part 2](./exercises/medium1/04.rb)
 - [Passing Parameters Part 3](./exercises/medium1/05.rb)
+- [Method to Proc](./exercises/medium1/06.rb)
+- [Bubble Sort with Blocks](./exercises/medium1/07.rb)
