@@ -67,3 +67,9 @@
 - [Passing Parameters Part 3](./exercises/medium1/05.rb)
 - [Method to Proc](./exercises/medium1/06.rb)
 - [Bubble Sort with Blocks](./exercises/medium1/07.rb)
+
+### Medium 2: Testing
+
+- [Cash Register Class](./exercises/medium2/cash_register.rb)
+- [Transaction Class](./exercises/medium2/transaction.rb)
+- [Testing Suite](./exercises/medium2/testing_suite.rb)
