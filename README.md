@@ -76,3 +76,8 @@
 - [Transaction Tests](./exercises/medium2/transaction_tests.rb)
 - [Text Class](./exercises/medium2/text.rb)
 - [Text Tests](./exercises/medium2/text_tests.rb)
+
+### Advanced 1
+
+- [Internal vs External Iterators](./exercises/advanced1/01.rb)
+- [Procs, Lambdas, and Blocks: Definition and Arity](./exercises/advanced1/02.rb)
