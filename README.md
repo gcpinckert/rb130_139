@@ -81,3 +81,7 @@
 
 - [Internal vs External Iterators](./exercises/advanced1/01.rb)
 - [Procs, Lambdas, and Blocks: Definition and Arity](./exercises/advanced1/02.rb)
+
+### Regex Book
+
+- [Ruby Methods with Regex](./exercises/regex/regex_book.rb)
