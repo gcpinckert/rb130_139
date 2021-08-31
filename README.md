@@ -1,5 +1,15 @@
 # RB130 - RB139 Ruby Foundations: More Topics
 
+## Table of Contents
+
+- [Study Guide](#study-guide)
+- [Coursework](#course-assignments)
+- [Exercises](#rb-130-exercises)
+
+## Study Guide
+
+- [Open Ended Practice Questions](./study_guide/practice_questions.md)
+
 ## Course Assignments
 
 ### Lesson 1: Blocks
@@ -17,7 +27,7 @@
 - [Assignment: TodoList Tests](./todo/todolist_test.rb)
 - [Test Coverage for TodoList](./todo/coverage/index.html)
 
-## Exercises
+## RB 130 Exercises
 
 ### Easy 1
 
