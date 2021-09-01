@@ -19,10 +19,11 @@
 1. What is Minitest? How do we get access to it?
 2. What are the different styles of Minitest?
 3. What is RSpec? How does it differ from Minitest?
-4. What is a test suite? What is a test? What are assertions?
-5. Give some examples of common assertions and how they are used.
-6. What is the SEAT approach?
-7. What is code coverage and how is it used? What tools can you use to gauge code coverage for yourself?
+4. What is a test suite? What is a test?
+5. What are assertions? How do they work?
+6. Give some examples of common assertions and how they are used.
+7. What is the SEAT approach?
+8. What is code coverage and how is it used? What tools can you use to gauge code coverage for yourself?
 
 ## Core Ruby Tools
 

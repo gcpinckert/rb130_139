@@ -8,6 +8,7 @@
 
 ## Study Guide
 
+- [Blocks](./study_guide/blocks.md)
 - [Open Ended Practice Questions](./study_guide/practice_questions.md)
 
 ## Course Assignments
