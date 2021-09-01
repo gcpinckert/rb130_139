@@ -27,3 +27,36 @@ Above, we define the method `alphabet` such that it returns a `Proc` object. Thi
 When we execute the `Proc`, it has its own private copy of `counter` and `alphabet`. The copy of `counter` gets incremented, but only for this particular `Proc` object. This is evident by the fact that we progress through the letters of the alphabet with each time we invoke the `Proc`.
 
 We also have the capability to invoke `alphabet` again and return a new `Proc` object. When we call `alphabet` and assign the return value to `alpha2` on line 24, it represents a second instance of `Proc` that has its own separate copy of local variables `counter` and `letters`. Therefore, when we invoke `Proc#call` on it, we begin again with the letter `'a'`, because `counter` references `0`. In `alpha1`, on the other hand, we will get `'d'` by invoking the `Proc`, because in that case `counter` points to `3`.
+
+## What are Blocks?
+
+In Ruby, **blocks** are sections of code that are surrounded by `do...end` or `{ .. }`. They are passed as arguments to a method call. Any method can accept an implicit block, but only those that implement their execution with some sort of call to `yield` will execute the code inside the given block. How the method which takes the block is implemented determines how the return value of the block is used, if at all.
+
+```ruby
+# each executes a given block, but ignores its return value
+['a', 'b', 'c'].each { |letter| puts letter.upcase }
+# outputs: A B C each on a new line
+# => ['a', 'b', 'c']
+
+# times executes a given block, but ignores its return value
+3.times { |i| i += 5 }
+# => 3
+
+# upcase can take a block, but it will not execute it
+letter = 'a'
+letter.upcase { puts letter }
+# no output, the block is not executed
+# => 'A'
+
+# map executes a given block, uses the return value for transformation
+['a', 'b', 'c'].map { |letter| letter.upcase }
+# => ['A', 'B', 'C']
+
+# select executes a given block, uses the return value for selection
+['a', 'B', 'c'].select { |letter| letter =~ /[a-z]/ }
+# => ['a', 'c']
+```
+
+Documentation tells us which methods can utilize a block, and how that block is used by the method.
+
+## Writing Methods that take Blocks
