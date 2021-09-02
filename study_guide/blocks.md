@@ -1,6 +1,8 @@
 # Blocks
 
 - [Closures](#closures)
+- [What are blocks?](#what-are-blocks?)
+- [Writing methods that take blocks](#writing-methods-that-take-blocks)
 
 ## Closures
 
@@ -60,3 +62,19 @@ letter.upcase { puts letter }
 Documentation tells us which methods can utilize a block, and how that block is used by the method.
 
 ## Writing Methods that take Blocks
+
+To define a method that takes a block, utilize the keyword `yield`. This will execute any block that gets passed to the method in question as an argument. Ostensibly, it allows any other person, whether another developer or yourself in the future, to "inject" a section of code into the method that you have defined.
+
+```ruby
+def execute_block
+  puts "Oh, did someone pass me a block?"
+  yield
+  puts "Cool! Well done!"
+end
+
+execute_block { puts "Yes sir, and here I am!" }
+
+# => "Oh, did someone pass me a block?"
+# => "Yes sir, and here I am!"
+# => "Cool! Well done!"
+```
