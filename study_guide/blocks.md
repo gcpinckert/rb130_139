@@ -277,3 +277,63 @@ before_and_after('hello') { |word| word.upcase }
 # Before: hello
 # After: HELLO
 ```
+
+## Use Cases for Blocks
+
+### Defer Implementation
+
+If you have a case where you are trying to implement a method, and you are not 100% sure of how it will be called during invocation time, you can leave this ambiguity to be decided at invocation time in the form of a block. A scenario like this might look like a method that you are calling from multiple places, with one little tweak in each place. Instead of defining a bunch of similar yet different methods, try to define a single method in a more general way, and leave the "tweaks" to be executed by a block during method invocation.
+
+Take the example of methods like `min_by`. `min_by` returns the minimum element in a collection _based on the return value of a given block_. This means that instead of only being able to return the absolute minimum value, we can specify the means by which we would like to determine "minimum". It might be the shortest length of a string, the word with the least amount of vowels, or any number of different criteria. The point is, we don't have to define this criteria _until we invoke the method_. Further, once this criteria is defined, _it does not affect the other implementation steps of the method_.
+
+```ruby
+# Given an array, find the minimum element based on some unknown criteria to be determined in the future.
+
+def min_by(arr)
+  min_ele = arr[0]
+  min_val = yield(arr[0])
+  
+  arr.each do |ele|
+    current_val = yield(ele)
+    next unless current_val < min_val
+    min_ele = ele
+    min_val = current_val
+  end
+  
+  min_ele
+end
+
+arr = %w(aaa bbbb ca aabbc)
+p min_by(arr) { |str| str.size }        # => 'ca'
+p min_by(arr) { |str| str.count('a') }  # => 'bbbb'
+```
+
+### Sandwich Code
+
+**Sandwich code** describes methods that need to perform some kind of "before" and "after" actions. This can include timing some process, logging something, or some kind of notification system. It also includes resource management, or interfacing with the operating system. For example, when dealing with files, we first need to allocate memory to open the file. Then, once we do whatever it is we want to do with the file in question, we want to close the file and clean up the memory allocation. Sandwiching a block in between these two steps allows us to automate the set up and clean up process.
+
+![Sandwich Code](./sandwhich_code.jpg)
+
+The above graphic depicts a method that times and outputs how long _some action_ takes. The method itself does not care about what the action is at all. Its sole purpose is to time the action, and output the time it took to execute the action. We use a block to allow any action the method caller wants to be specified at the time the method is invoked. The implementation of our method times the action, and does not change at all regardless of what the action is.
+
+A built-in example of sandwich code is `File::open`. We can call `File::open` in two ways:
+
+1. With an argument specifying the name of the file to open, and no block. In this case, we must open the file in one step, take any action we wish to take on the file in another step, and then explicitly close the file once we are done with it
+
+    ```ruby
+    file = File.open('a_file.txt', 'w+')
+    # do something with the file
+    file.close
+    ```
+
+2. With an argument specifying the name of the file to open, and with a block containing the action we want to take on the file in question. In this case, `File::open` will open the file, perform the specified action, and close the file automatically. The method returns the return value of the block.
+
+    ```ruby
+    File.open('a_file.text', 'w+') do |file|
+      # do something with the file
+    end
+    ```
+
+The necessary cleanup of opening a file (closing it) is _automated_ by the implementation of `File::open`. This means that when using `File::open` all we have to worry about as the method caller is passing in the relevant file manipulation code, and let `File::open` worry about set up and take down.
+
+## Explicit Block Parameters
