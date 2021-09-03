@@ -5,6 +5,7 @@
 - [Writing methods that take blocks](#writing-methods-that-take-blocks)
   - [Passing Execution to a Block](#passing-execution-to-a-block)
   - [Yielding with an Argument](#yielding-with-an-argument)
+  - [Return Value of a Block](#return-value-of-a-block)
 
 ## Closures
 
@@ -214,3 +215,65 @@ Here, we are dealing with strings. Just as before, each string is yielded to the
 **Note**: Unlike methods, if you pass the wrong number of arguments to a block, it will not throw an error. This is known as **lenient arity**. For more information on this see [arity](link-goes-here). *needs link
 
 ### Return Value of a Block
+
+Like methods, blocks have a return value and this is determined by the last expression in the block. Whatever that expression evaluates to will be implicitly returned by the block. This value can be captures and utilized when execution returns to the method implementation that yielded to the block.
+
+We can capture the return value of a block by assigning it to a local variable inside the method. This value, then, can be called up at any time and evaluated or manipulated.
+
+```ruby
+def before_and_after(obj)
+  puts "Before: #{obj}"
+  after = yield(obj)      # capture the return value of the block
+  puts "After: #{after}"
+end
+
+before_and_after(0) { |num| num + 5 }
+# Before: 0
+# After: 5
+
+before_and_after('good morning') { |greeting| greeting + "!!" }
+# Before: good morning
+# After: good morning!!
+```
+
+We can also utilize return values in other statements, such as conditionals. For example, the `Array#select` method uses the return value of a block and evaluates it for truthiness.
+
+```ruby
+def select_elements(array)
+  results = []
+  counter = 0
+  while counter < array.size
+    current_element = array[counter]
+    # evaluate the return value of the block for truthiness
+    results << current_element if yield(current_element)
+    counter += 1
+  end
+  results
+end
+
+select_elements(%w(a B C d e F)) { |letter| letter =~ /[A-Z]/ }
+#  => ["B", "C", "F"]
+
+select_elements([1, 2, 3, 4]) { |num| num.odd? }
+#  => [1, 3]
+```
+
+Just as methods should _either_ return a meaningful value _or_ perform some kind of side-effect action (output value, mutate a value) so should blocks. Keep the distinction between these two "types" of actions and keep them apart in both your methods and blocks.
+
+```ruby
+def before_and_after(obj)
+  puts "Before: #{obj}"
+  after = yield(obj)      # capture the return value of the block
+  puts "After: #{after}"
+end
+
+# this is bad (returns meaningful value and performs mutation):
+before_and_after('hello') { |word| word.upcase! }
+# Before: hello
+# After: HELLO
+
+# this is good:
+before_and_after('hello') { |word| word.upcase }
+# Before: hello
+# After: HELLO
+```
