@@ -6,6 +6,10 @@
   - [Passing Execution to a Block](#passing-execution-to-a-block)
   - [Yielding with an Argument](#yielding-with-an-argument)
   - [Return Value of a Block](#return-value-of-a-block)
+- [Use Cases for Blocks](#use-cases-for-blocks)
+  - [Deferring Implementation](#defer-implementation)
+  - [Sandwich Code](#sandwich-code)
+- [Explicit Block Parameters](#explicit-block-parameters)
 
 ## Closures
 
@@ -337,3 +341,118 @@ A built-in example of sandwich code is `File::open`. We can call `File::open` in
 The necessary cleanup of opening a file (closing it) is _automated_ by the implementation of `File::open`. This means that when using `File::open` all we have to worry about as the method caller is passing in the relevant file manipulation code, and let `File::open` worry about set up and take down.
 
 ## Explicit Block Parameters
+
+All methods in Ruby can take an implicit block. An implicit block is one that is passed to a method call as an argument, without being named explicitly or assigned to a parameter once passed into the method. Because of this, an implicit block is essentially anonymous. The only way we can handle, or execute, the block within the method is with a call to `yield`, passing along any arguments it may require. We can save its return value into a local variable but not the block itself.
+
+It is, however, possible to assign an **explicit block** to a parameter. This block gets treated as a _named object_, and therefore can be passed around, referenced, reassigned, invoked multiple times, and manipulated in a way that an implicit block cannot. Essentially, the way we do this is to **convert the block argument into a Proc**.
+
+_To Convert A Block Into A Proc_:
+
+- Add a parameter with an arbitrary name prepended with unary `&` to the end of the list of parameters in the method definition.
+- This saves the block passed to the method as a `Proc` object, which can be referenced or passed around via the parameter
+- To reference the Proc inside the method, call the parameter (variable) without the `&`.
+- When you want to execute it, invoke the `Proc#call` method on it.
+
+```ruby
+def make_a_proc(&block)
+  puts "Object created by &block, referenced by block:\n#{block}"
+  puts block.call # we do not include & when referencing the Proc
+end
+
+make_a_proc { 'does something' }
+# Object created by &block, referenced by block:
+# <Proc:0x00005610b3ac6df8 solution.rb:5>
+# does something
+```
+
+Now that we have a way to reference the `Proc` object, we can even pass it to other methods.
+
+```ruby
+def passing_around_1(&block)
+  puts "--- From passing_around_1 ---"
+  puts "Looks like someone has invoked me with a block"
+  puts "I've saved it as a Proc"
+  puts "Now I'm going to give it away."
+  puts
+  passing_around_2(block)
+  puts
+  puts "--- Back to passing_around_1 ---"
+  puts "That was a ball! Let's do more soon!"
+end
+
+def passing_around_2(now_a_proc)
+  puts "--- Now in passing_around_2 ---"
+  puts "What's this? I've found a Proc!"
+  puts
+  now_a_proc.call
+  puts
+  puts "--- Back in passing_around_2 ---"
+  puts "^^ That was the execution of the Proc!"
+end
+
+
+passing_around_1 do
+  puts "--- From inside the block ---"
+  puts "I started out as a block"
+  puts "Now I have a name and can get passed around!"
+  puts "Thanks method friends!"
+end
+
+# OUTPUT:
+# --- From passing_around_1 ---
+# Looks like someone has invoked me with a block
+# I've saved it as a Proc
+# Now I'm going to give it away.
+
+# --- Now in passing_around_2 ---
+# What's this? I've found a Proc!
+
+# --- From inside the block ---
+# I started out as a block
+# Now I have a name and can get passed around!
+# Thanks method friends!
+
+# --- Back in passing_around_2 ---
+# ^^ That was the execution of the Proc!
+
+# --- Back to passing_around_1 ---
+# That was a ball! Let's do more soon!
+
+```
+
+Let us say that we want to build a simple guessing game. The game will randomly select a number from an arbitrary range of numbers. We, the user, want to pass a block in which will test to see if the "guess" was correct. But we want to save this as an instance variable in the game, so that we can utilize this in various methods and call it whenever, and wherever, we want. In order to accomplish this, we need to pass the block in as an explicit parameter. That is, we need to convert it into a `Proc`.
+
+```ruby
+class Guesser
+  attr_reader :range, :tester
+
+  def initialize(range, &tester) # note the block is always last parameter
+    # saves the resulting Proc to instance variable tester
+    @range, @tester = range, tester
+  end
+
+  def take_a_guess
+    guess = range.to_a.sample
+    if tester.call(guess) # execute the block and pass guess as argument
+      puts "Yay! I guessed #{guess} correctly!"
+    else
+      puts "Boo hoo, my guess #{guess} was wrong."
+    end
+  end
+end
+
+# local variable `guess` from take_a_guess is assigned to block parameter `g`
+# the block here will get assigned to @tester
+guessing_game = Guesser.new(1..10) { |g| guess == 7 }
+
+guessing_game.take_a_guess
+# Yay! I guessed 2 correctly!
+
+guessing_game.take_a_guess
+# Boo hoo, my guess 1 was wrong
+
+guessing_game.take_a_guess
+# Boo hoo, my guess 5 was wrong
+```
+
+TL;DR: If you want to do anything in your method with a block other than execute it with `yield`, then you really want a `Proc`. We create a `Proc` by calling a method with an **explicit block parameter** (`&parameter`). Now the block has been converted into an object that can be referenced and passed around. There is really no other way to convert a block to a `Proc` because the only place that blocks exist are in method invocations.
