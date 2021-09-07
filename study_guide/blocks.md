@@ -10,6 +10,7 @@
   - [Deferring Implementation](#defer-implementation)
   - [Sandwich Code](#sandwich-code)
 - [Explicit Block Parameters](#explicit-block-parameters)
+- [Variable Scope and Binding](#variable-scope-and-binding)
 
 ## Closures
 
@@ -146,7 +147,7 @@ town_crier("The King Approaches!") { puts "Make way, ye peasants!" }
 
 In the above examples, the execution begins at the first _method invocation_ when we call `town_crier` with the string argument `"Welcome to town!"` and a block. Then, execution goes to _method implementation_, or where we have defined the `town_crier` method. `"Welcome to town!"` is assigned to the parameter `words`.
 
-The next line yields to the given block. This means that execution jumps back to _method invocatin_ to find the closure represented by the block. In this case, it includes the statement `system 'clear'`. This is executed, and the screen is cleared.
+The next line yields to the given block. This means that execution jumps back to _method invocatiOn_ to find the closure represented by the block. In this case, it includes the statement `system 'clear'`. This is executed, and the screen is cleared.
 
 Now that the block has been executed, execution goes back to the _method implementation_ and proceeds with the rest of the method. It will first output the string `"*** Here ye! Here ye! ***"` and then the string `"*** Welcome to town! ***"`.
 
@@ -456,3 +457,68 @@ guessing_game.take_a_guess
 ```
 
 TL;DR: If you want to do anything in your method with a block other than execute it with `yield`, then you really want a `Proc`. We create a `Proc` by calling a method with an **explicit block parameter** (`&parameter`). Now the block has been converted into an object that can be referenced and passed around. There is really no other way to convert a block to a `Proc` because the only place that blocks exist are in method invocations.
+
+## Variable Scope and Binding
+
+_Quick review_:
+
+A block creates a new scope for local variables (this is really only applicable to local variables). A local variable initialized in outer scope is available to a block. A local variable initialized in inner scope is not available in outer scope.
+
+[Closures](#closures) keep track of the local variables that are in scope for them via a **binding**. A **binding** consists of the _surrounding environment_ or _context_ for a closure. This can include local variables, method calls/references, constants, or any other kind of artifacts. Basically, the closure will **bind** and drag around with it anything it needs to function correctly.
+
+This can result in seeming violations of scoping rules for things like local variables. Let us use the example of a `Proc`, which is an object that gets explicitly passed into a method. Recall that to execute a `Proc` object we use the `Proc#call` method:
+
+```ruby
+def introduce_yourself(introduction)
+  introduction.call
+end
+
+me = "Ginni"
+
+my_bit = Proc.new { puts "Hello, my name is #{me}." }
+
+introduce_yourself(my_bit)
+# Hello, my name is Ginni.
+```
+
+Above, we first initialize local variable `me` and assign it the string object `"Ginni"`. Next, we instantiate a new `Proc` object and assign it to the local variable `my_bit`. Note that the new `Proc` object utilizes a block that accesses the local variable `me`.
+
+Next, we pass the `Proc` object referenced by `my_bit` into the method `introduce_yourself`. Within the method, the `Proc` is called, and we get the output `Hello, my name is Ginni`. How does the `Proc` access the value referenced by local variable `me`? By virtue of its **binding**.
+
+In order for local variables to be a part of a closures binding, **they must be initialized before the closure is created** unless they are explicitly passed into the closure.
+
+For example:
+
+```ruby
+def introduce_yourself(introduction)
+  introduction.call
+end
+
+my_bit = Proc.new { puts "Hello, my name is #{me}" }
+
+me = "Ginni"
+
+introduce_yourself(my_bit)
+# Raises NameError: undefined local variable or method `me`
+```
+
+The above code does not work, because the local variable `me` is initialized after the closure is created.
+
+However, if you initialize a local variable before creating a closure, access it within the closure, _and then reassign that local variable_, the last assigned value will be reflected when the closure is executed:
+
+```ruby
+def introduce_yourself(introduction)
+  introduction.call
+end
+
+me = "Ginni"
+
+my_bit = Proc.new { puts "Hello, my name is #{me}" }
+
+me = "Other Ginni"
+
+introduce_yourself(my_bit)
+# Hello, my name is Other Ginni
+```
+
+Notice in the above example, how the `Proc` referenced by `my_bit` is aware of the new value assigned to `me`, despite the fact that this reassignment takes place _after the `Proc` is created_.
