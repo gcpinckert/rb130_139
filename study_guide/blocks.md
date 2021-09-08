@@ -12,6 +12,8 @@
   - [Sandwich Code](#sandwich-code)
 - [Explicit Block Parameters](#explicit-block-parameters)
 - [Symbol to Proc](#symbol-to-proc)
+- [Arity](#arity)
+- [Blocks vs Procs vs Lambdas](#blocks-vs-procs-vs-lambdas)
 
 ## Closures
 
@@ -610,3 +612,131 @@ Steps:
 1. We pass an object to `&`. If it is a `Proc`, this is converted to a block.
 2. If it is not a `Proc`, `&` will call `to_proc` on the object. If the object is not then converted to a `Proc`, an error will be raised.
 3. Now we have a `Proc` that can be converted to a block with `&`.
+
+## Arity
+
+**Arity** refers to _rule regarding the number of arguments you can pass_ when dealing with methods, blocks, procs and lambdas.
+
+Methods have **strict arity**. This means that you must pass the exact number of arguments specified in their definitions, otherwise an error will be raised.
+
+```ruby
+def no_arguments
+  puts "I take no arguments"
+end
+
+def one_argument(str)
+  puts "I take one argument: #{str}"
+end
+
+def two_arguments(str1, str2)
+  puts "I take two arguments: #{str1} and #{str2}"
+end
+
+no_arguments              # I take no arguments
+no_arguments('hi')        # ArgumentError
+no_arguments ('a', 'b')   # ArgumentError
+
+one_argument              # ArgumentError
+one_argument('hi')        # I take one argument: hi
+one_argument('a', 'b')    # ArgumentError
+
+two_arguments             # ArgumentError
+two_arguments('hi')       # ArgumentError
+two_arguments('a', 'b')   # I take two arguments: a and b
+```
+
+Blocks and Procs, on the other hand, have **lenient arity**, which means no errors will be raised if too few or too many arguments are passed to the block or `Proc` in question.
+
+```ruby
+def test
+  # pass only one argument to a block
+  yield('hello')
+end
+
+# define a block with two parameters
+test { |a, b| puts "a: #{a}, b: #{b}" }
+# Output:
+# a: hello b:
+
+# define a block with no parameters
+test { puts "I don't take any arguments" }
+# I don't take any arguments
+```
+
+Above, we define the method `test` to yield one argument, the string `'hello'` to a block. Then, we invoke `test` and pass a block with two block parameters `a` and `b`. No errors are raised, however. Instead, Ruby will consider any extra parameters to reference `nil`. Therefore, `b` will reference `nil` and the statement will still be output as shown above.
+
+Next, we invoke `test` with a block that has no parameters, i.e. it doesn't take any arguments. The argument passed with `yield` within the method, however, is just ignored, and the string we initialize in the block is output, unaffected.
+
+Procs behave similarly to blocks in this way. Lambdas, on the other hand, have **strict arity**, like methods, and so much be passed the correct number of arguments to function.
+
+### Blocks vs Procs vs Lambdas
+
+_Blocks_:
+
+- Have lenient arity.
+  - can be executed even if the expected arguments are not passed
+  - extra parameters will reference `nil`
+  - can be executed if extra arguments are passed
+  - extra arguments will be ignored
+- Methods that expect blocks (i.e. contain the keyword `yield`) must be passed a block.
+  - `yield` without a guard clause (such as `block_given?`) that does not receive a block will result in a `LocalJumpError` being raised.
+- Can only access values that have been passed on, or those that were initialized in outer scope (via its binding)
+
+```ruby
+def block_method_1(animal)
+  yield
+end
+
+def block_method_2(animal)
+  yield(animal)
+end
+
+block_method_1('seal') { |seal| puts "This is a #{seal}." }
+# => This is a .
+block_method_1('seal')
+# LocalJumpError (no block given)
+block_method_2('turtle') { |turtle| puts "This is a #{turtle}." }
+# => This is a turtle.
+block_method_2('turtle') do |turtle, seal|
+  puts "This is a #{turtle} and a #{seal}"
+end
+# => This is a turtle and a .
+block_method_2('turtle') { puts "This is a #{animal}" }
+# NameError undefined local variable or method `animal`
+```
+
+_Procs_:
+
+- A special kind of object in Ruby that exemplifie3s a closure
+- Has its own class
+- Can be assigned to a variable and passed around
+- Can be returned by a method and reused
+- Has lenient arity similar to blocks
+
+```ruby
+my_proc = proc { |thing| puts "This is a #{thing}." }
+puts my_proc        # #<Proc:0x000055b34f607180 02.rb:2>
+puts my_proc.class  # Proc
+my_proc.call        # This is a . (no ArgumentError)
+my_proc.call('cat') # This is a cat.
+```
+
+_Lambdas_:
+
+- A special kind of `Proc` object in Ruby that exemplifies a closure.
+- Does not have its own class (lambdas are instances of `Proc`)
+- Can be assigned to a variable and passed around
+- Initialized with `Kernel#lambda`, which is equivalent to `Proc.new`, except that the resulting `Proc` objects check the number of parameters passed when called
+- Has strict arity, must be passed the correct number of expected arguments.
+
+```ruby
+my_lambda = lambda { |thing| puts "This is a #{thing}." }
+my_second_lambda = -> (thing) { puts "This is a #{thing}." }
+puts my_lambda          # #<Proc:0x0000556df7beedc0 02.rb:15 (lambda)>
+puts my_second_lambda   # #<Proc:0x0000556df7beed48 02.rb:16 (lambda)>
+puts my_lambda.class    # Proc
+my_lambda.call('dog')   # This is a dog.
+my_lambda.call          # ArgumentError
+my_third_lambda = Lambda.new { |thing| puts "This is a #{thing}." }
+# NameError (uninitialized constant Lambda)
+```

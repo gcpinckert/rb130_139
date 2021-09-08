@@ -21,6 +21,8 @@
     - [Sandwich Code](./study_guide/blocks.md#sandwich-code)
   - [Explicit Block Parameters](./study_guide/blocks.md#explicit-block-parameters)
   - [Symbol to Proc](./study_guide/blocks.md#symbol-to-proc)
+  - [Arity](./study_guide/blocks.md#arity)
+  - [Blocks vs Procs vs Lambdas](./study_guide/blocks.md#blocks-vs-procs-vs-lambdas)
 - [Open Ended Practice Questions](./study_guide/practice_questions.md)
 
 ## Course Assignments
