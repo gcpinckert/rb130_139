@@ -23,6 +23,7 @@
   - [Symbol to Proc](./study_guide/blocks.md#symbol-to-proc)
   - [Arity](./study_guide/blocks.md#arity)
   - [Blocks vs Procs vs Lambdas](./study_guide/blocks.md#blocks-vs-procs-vs-lambdas)
+- [Testing Terms](./study_guide/testing_terms.md)
 - [Open Ended Practice Questions](./study_guide/practice_questions.md)
 
 ## Course Assignments
