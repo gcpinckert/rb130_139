@@ -1,6 +1,7 @@
 # Blocks
 
 - [Closures](#closures)
+- [Variable Scope and Binding](#variable-scope-and-binding)
 - [What are blocks?](#what-are-blocks?)
 - [Writing methods that take blocks](#writing-methods-that-take-blocks)
   - [Passing Execution to a Block](#passing-execution-to-a-block)
@@ -10,7 +11,7 @@
   - [Deferring Implementation](#defer-implementation)
   - [Sandwich Code](#sandwich-code)
 - [Explicit Block Parameters](#explicit-block-parameters)
-- [Variable Scope and Binding](#variable-scope-and-binding)
+- [Symbol to Proc](#symbol-to-proc)
 
 ## Closures
 
@@ -37,6 +38,71 @@ Above, we define the method `alphabet` such that it returns a `Proc` object. Thi
 When we execute the `Proc`, it has its own private copy of `counter` and `alphabet`. The copy of `counter` gets incremented, but only for this particular `Proc` object. This is evident by the fact that we progress through the letters of the alphabet with each time we invoke the `Proc`.
 
 We also have the capability to invoke `alphabet` again and return a new `Proc` object. When we call `alphabet` and assign the return value to `alpha2` on line 24, it represents a second instance of `Proc` that has its own separate copy of local variables `counter` and `letters`. Therefore, when we invoke `Proc#call` on it, we begin again with the letter `'a'`, because `counter` references `0`. In `alpha1`, on the other hand, we will get `'d'` by invoking the `Proc`, because in that case `counter` points to `3`.
+
+## Variable Scope and Binding
+
+_Quick review_:
+
+A block creates a new scope for local variables (this is really only applicable to local variables). A local variable initialized in outer scope is available to a block. A local variable initialized in inner scope is not available in outer scope.
+
+[Closures](#closures) keep track of the local variables that are in scope for them via a **binding**. A **binding** consists of the _surrounding environment_ or _context_ for a closure. This can include local variables, method calls/references, constants, or any other kind of artifacts. Basically, the closure will **bind** and drag around with it anything it needs to function correctly.
+
+This can result in seeming violations of scoping rules for things like local variables. Let us use the example of a `Proc`, which is an object that gets explicitly passed into a method. Recall that to execute a `Proc` object we use the `Proc#call` method:
+
+```ruby
+def introduce_yourself(introduction)
+  introduction.call
+end
+
+me = "Ginni"
+
+my_bit = Proc.new { puts "Hello, my name is #{me}." }
+
+introduce_yourself(my_bit)
+# Hello, my name is Ginni.
+```
+
+Above, we first initialize local variable `me` and assign it the string object `"Ginni"`. Next, we instantiate a new `Proc` object and assign it to the local variable `my_bit`. Note that the new `Proc` object utilizes a block that accesses the local variable `me`.
+
+Next, we pass the `Proc` object referenced by `my_bit` into the method `introduce_yourself`. Within the method, the `Proc` is called, and we get the output `Hello, my name is Ginni`. How does the `Proc` access the value referenced by local variable `me`? By virtue of its **binding**.
+
+In order for local variables to be a part of a closures binding, **they must be initialized before the closure is created** unless they are explicitly passed into the closure.
+
+For example:
+
+```ruby
+def introduce_yourself(introduction)
+  introduction.call
+end
+
+my_bit = Proc.new { puts "Hello, my name is #{me}" }
+
+me = "Ginni"
+
+introduce_yourself(my_bit)
+# Raises NameError: undefined local variable or method `me`
+```
+
+The above code does not work, because the local variable `me` is initialized after the closure is created.
+
+However, if you initialize a local variable before creating a closure, access it within the closure, _and then reassign that local variable_, the last assigned value will be reflected when the closure is executed:
+
+```ruby
+def introduce_yourself(introduction)
+  introduction.call
+end
+
+me = "Ginni"
+
+my_bit = Proc.new { puts "Hello, my name is #{me}" }
+
+me = "Other Ginni"
+
+introduce_yourself(my_bit)
+# Hello, my name is Other Ginni
+```
+
+Notice in the above example, how the `Proc` referenced by `my_bit` is aware of the new value assigned to `me`, despite the fact that this reassignment takes place _after the `Proc` is created_.
 
 ## What are Blocks?
 
@@ -458,67 +524,89 @@ guessing_game.take_a_guess
 
 TL;DR: If you want to do anything in your method with a block other than execute it with `yield`, then you really want a `Proc`. We create a `Proc` by calling a method with an **explicit block parameter** (`&parameter`). Now the block has been converted into an object that can be referenced and passed around. There is really no other way to convert a block to a `Proc` because the only place that blocks exist are in method invocations.
 
-## Variable Scope and Binding
+## Symbol to Proc
 
-_Quick review_:
-
-A block creates a new scope for local variables (this is really only applicable to local variables). A local variable initialized in outer scope is available to a block. A local variable initialized in inner scope is not available in outer scope.
-
-[Closures](#closures) keep track of the local variables that are in scope for them via a **binding**. A **binding** consists of the _surrounding environment_ or _context_ for a closure. This can include local variables, method calls/references, constants, or any other kind of artifacts. Basically, the closure will **bind** and drag around with it anything it needs to function correctly.
-
-This can result in seeming violations of scoping rules for things like local variables. Let us use the example of a `Proc`, which is an object that gets explicitly passed into a method. Recall that to execute a `Proc` object we use the `Proc#call` method:
+Alright, so we know we can create a `Proc` out of a block by passing a block to a method as an explicit parameter. That is, by applying unary `&` to a named method parameter that expects a block.
 
 ```ruby
-def introduce_yourself(introduction)
-  introduction.call
+def take_a_guess(range, &my_guess)
+  guess = range.to_a.sample
+  if my_guess.call(guess) # test truthiness with Proc
+    puts "Yay! My guess #{guess} was correct!"
+  else
+    puts "Aw, my guess #{guess} was incorrect."
+  end
 end
 
-me = "Ginni"
-
-my_bit = Proc.new { puts "Hello, my name is #{me}." }
-
-introduce_yourself(my_bit)
-# Hello, my name is Ginni.
+# pass a block as argument to be converted to Proc
+take_a_guess(1..10) { |g| g == 5}
+# => Yay! My guess 5 was correct! (results may vary)
 ```
 
-Above, we first initialize local variable `me` and assign it the string object `"Ginni"`. Next, we instantiate a new `Proc` object and assign it to the local variable `my_bit`. Note that the new `Proc` object utilizes a block that accesses the local variable `me`.
-
-Next, we pass the `Proc` object referenced by `my_bit` into the method `introduce_yourself`. Within the method, the `Proc` is called, and we get the output `Hello, my name is Ginni`. How does the `Proc` access the value referenced by local variable `me`? By virtue of its **binding**.
-
-In order for local variables to be a part of a closures binding, **they must be initialized before the closure is created** unless they are explicitly passed into the closure.
-
-For example:
+We can also do the reverse of this. By passing a `Proc` _argument_ with the unary `&` to a method that expects a block we can effectively convert that `Proc` into a block.
 
 ```ruby
-def introduce_yourself(introduction)
-  introduction.call
+def take_multiple_guesses(range, &my_number)
+  guesses = []
+  3.times { guesses << range.to_a.sample }
+  
+  # recall that we currently have the Proc my_number
+  # but the any? method expects a block
+  # convert the Proc to a block by passing as argument with &
+  if guesses.any?(&my_number)
+    puts "#{guesses} includes your number!"
+  else
+    puts "Aw, #{guesses} does not include your number."
+  end
 end
 
-my_bit = Proc.new { puts "Hello, my name is #{me}" }
-
-me = "Ginni"
-
-introduce_yourself(my_bit)
-# Raises NameError: undefined local variable or method `me`
+take_multiple_guesses (1..15) { |g| g == 5 }
+# 5, 5, 7 includes your number!
 ```
 
-The above code does not work, because the local variable `me` is initialized after the closure is created.
+- When `&` is in a method definition:
+  - It is being used to describe an explicit block _parameter_
+  - It expects to take a block
+  - It will return a converted `Proc` from the block
+- When `&` is in a method invocation:
+  - It is being used to help pass a `Proc` (or Symbol) as an argument to a method that expects a block
+  - It expects to take a `Proc`
+  - Will return a block that was converted from the given `Proc`
 
-However, if you initialize a local variable before creating a closure, access it within the closure, _and then reassign that local variable_, the last assigned value will be reflected when the closure is executed:
+When `&` expects a `Proc` (in the case of being used during method invocation), and it doesn't receive one, it will automatically call `#to_proc` on the object that it received and try and convert it to a `Proc`.
+
+If the object in question does not have a `to_proc` method and cannot be converted, this will raise an error. However, there is also a useful shortcut with symbols implied by this that we can take advantage of.
+
+When pairing `&` with a symbol, we are basically saying, take the method that this symbol represents and create a `Proc` that calls this method on the object that gets passed to it. Subsequently, this `Proc` can be acted on by unary `&` to convert it into a block.
+
+This allows us to pass symbols with unary `&` into method that expect blocks, when we are passing in a very simple block.
 
 ```ruby
-def introduce_yourself(introduction)
-  introduction.call
-end
+proc1 = :upcase.to_proc
+# => #<Proc:0x0000562c4d59b6e8(&:upcase) (lambda)>
 
-me = "Ginni"
+proc2 = Proc.new { |str| str.upcase }
+# => #<Proc:0x0000562c4d56ae08 (irb):38>
 
-my_bit = Proc.new { puts "Hello, my name is #{me}" }
+array = %w(a b c d e)
 
-me = "Other Ginni"
+# pass the Proc with & to a method that expects a block
+array.map(&proc1)
+# => ['A', 'B', 'C', 'D', 'E']
 
-introduce_yourself(my_bit)
-# Hello, my name is Other Ginni
+array.map(&proc2)
+# => ['A', 'B', 'C', 'D', 'E']
+
+# we know that & will automaticall call to_proc so:
+array.map(&:upcase)
+# => ['A', 'B', 'C', 'D', 'E']
+# has the same results as the other two methods
 ```
 
-Notice in the above example, how the `Proc` referenced by `my_bit` is aware of the new value assigned to `me`, despite the fact that this reassignment takes place _after the `Proc` is created_.
+Note that this shortcut **only works for blocks that consist of a single method call on a single block parameter**. It does not work for methods that require an argument.
+
+Steps:
+
+1. We pass an object to `&`. If it is a `Proc`, this is converted to a block.
+2. If it is not a `Proc`, `&` will call `to_proc` on the object. If the object is not then converted to a `Proc`, an error will be raised.
+3. Now we have a `Proc` that can be converted to a block with `&`.

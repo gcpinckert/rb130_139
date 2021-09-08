@@ -9,6 +9,18 @@
 ## Study Guide
 
 - [Blocks](./study_guide/blocks.md)
+  - [Closures](./study_guide/blocks.md#closures)
+  - [Variable Scope and Binding](./study_guide/blocks.md#variable-scope-and-binding)
+  - [What are blocks?](./study_guide/blocks.md#what-are-blocks?)
+  - [Writing methods that take blocks](./study_guide/blocks.md#writing-methods-that-take-blocks)
+    - [Passing Execution to a Block](./study_guide/blocks.md#passing-execution-to-a-block)
+    - [Yielding with an Argument](./study_guide/blocks.md#yielding-with-an-argument)
+    - [Return Value of a Block](./study_guide/blocks.md#return-value-of-a-block)
+  - [Use Cases for Blocks](./study_guide/blocks.md#use-cases-for-blocks)
+    - [Deferring Implementation](./study_guide/blocks.md#defer-implementation)
+    - [Sandwich Code](./study_guide/blocks.md#sandwich-code)
+  - [Explicit Block Parameters](./study_guide/blocks.md#explicit-block-parameters)
+  - [Symbol to Proc](./study_guide/blocks.md#symbol-to-proc)
 - [Open Ended Practice Questions](./study_guide/practice_questions.md)
 
 ## Course Assignments
