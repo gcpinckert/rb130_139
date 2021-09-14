@@ -15,6 +15,21 @@
 
 **Assertion** = the part of a [test](#test) which confirms that the results we are getting from the interface being tested match what is expected. With an assertion, we first give it the value that we expect the code being tested to return, then we give it the code we want to test. An assertion will compare the expected value with the value returned by the code in a number of ways. Ostensibly, they represent _what you are trying to verify_.
 
+Common Assertions:
+
+```ruby
+assert(obj, [error message])
+assert_raises(ErrorType) { ... }
+assert_equal(expected, actual)
+assert_includes(collection, object) #include?
+assert_instance_of(class, object)
+assert_in_delta(3.145, Math::PI, 0.001)
+assert_empty(collection) #empty?
+assert_nil(obj) #nil?
+assert_same(array, array.sort!)
+assert_match(regex, obj)
+```
+
 ## Code Coverage
 
 **Code Coverage** = tells you how much of the code that the program consists of is actually tested in the test suite. Bases it's percentage on _all_ code, including both public and private interfaces.
