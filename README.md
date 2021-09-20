@@ -24,6 +24,18 @@
   - [Arity](./study_guide/blocks.md#arity)
   - [Blocks vs Procs vs Lambdas](./study_guide/blocks.md#blocks-vs-procs-vs-lambdas)
 - [Testing Terms](./study_guide/testing_terms.md)
+- [Core Ruby Tools](./study_guide/core_ruby_tools.md)
+  - [Overview](./study_guide/core_ruby_tools.md#overview)
+  - [Installing Ruby](./study_guide/core_ruby_tools.md#installing-ruby)
+  - [Ruby Version Managers](./study_guide/core_ruby_tools.md#ruby-version-managers)
+  - [Gems](./study_guide/core_ruby_tools.md#gems)
+    - [What are Gems?](./study_guide/core_ruby_tools.md#what-are-gems?)
+    - [Working with Gems](./study_guide/core_ruby_tools.md#working-with-gems)
+  - [Bundler](./study_guide/core_ruby_tools.md#bundler)
+    - [Gemfile and Gemfile.lock](./study_guide/core_ruby_tools.md#gemfile-and-gemfile.lock)
+    - [Using Bundler](./study_guide/core_ruby_tools.md#using-bundler)
+    - [bundle exec](./study_guide/core_ruby_tools.md#bundle-exec)
+  - [Rake](./study_guide/core_ruby_tools.md#rake)
 - [Open Ended Practice Questions](./study_guide/practice_questions.md)
 
 ## Course Assignments
