@@ -36,6 +36,12 @@
     - [Using Bundler](./study_guide/core_ruby_tools.md#using-bundler)
     - [bundle exec](./study_guide/core_ruby_tools.md#bundle-exec)
   - [Rake](./study_guide/core_ruby_tools.md#rake)
+- [Packaging Code Into a Project](./study_guide/packaging_code.md)
+  - [Project Directory](./study_guide/packaging_code.md#set-up-the-project-directory)
+  - [Gemfile Setup](./study_guide/packaging_code.md#set-up-the-gemfile)
+  - [Adding More](./study_guide/packaging_code.md#adding-more)
+  - [Rakefile Setup](./study_guide/packaging_code.md#set-up-the-rakefile)
+  - [gemspec](./study_guide/packaging_code.md#gemspec)
 - [Open Ended Practice Questions](./study_guide/practice_questions.md)
 
 ## Course Assignments
