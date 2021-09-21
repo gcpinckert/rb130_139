@@ -55,6 +55,7 @@
   - [Adding More](./study_guide/packaging_code.md#adding-more)
   - [Rakefile Setup](./study_guide/packaging_code.md#set-up-the-rakefile)
   - [gemspec](./study_guide/packaging_code.md#gemspec)
+- [Regex Cheat Sheet](./study_guide/regex.md)
 - [Open Ended Practice Questions](./study_guide/practice_questions.md)
 
 ## Course Assignments
